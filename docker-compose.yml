@@ -42,7 +42,7 @@ services:
       # - "80:80"
     volumes:
       - wordpress:/var/www/html
-      - ./requirements/nginx:/etc/nginx/conf.d
+      # - ./requirements/nginx:/etc/nginx/conf.d
     networks:
       - regex-33
 
