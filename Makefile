@@ -16,4 +16,10 @@ clean:
 	sudo docker-compose down
 	sudo docker-compose rm -f
 
+clear_all:
+	sudo docker rmi $(sudo docker images -f "dangling=true" -q)
+	sudo docker rm $(sudo docker ps -aq) -f
+	sudo docker-compose down --volume
+	sudo docker-compose rm -f
+
 re: clean all

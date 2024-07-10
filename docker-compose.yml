@@ -12,61 +12,34 @@ services:
     restart: always
     volumes:
       - mariadb_data:/var/lib/mysql
-      # - mariadb_run:/run/mysqld
-      # - ./requirements/mariadb/conf.d:/etc/mysql/conf.d
     networks:
       - regex-33
 
-  # wordpress:
-  #   depends_on:
-  #     - mariadb 
-  #   image: wordpress:5.1.1-fpm-alpine
-  #   container_name: wordpress
-  #   restart: unless-stopped
-  #   env_file: .env
-  #   environment:
-  #     - WORDPRESS_DB_HOST=mariadb:3306
-  #     - WORDPRESS_DB_USER=$MYSQL_USER
-  #     - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
-  #     - WORDPRESS_DB_NAME=wordpress
-  #   volumes:
-  #     - wordpress:/var/www/html
-  #   networks:
-  #     - regex-33
-
   wordpress:
-    depends_on:
-      - mariadb
     build:
-      context: ./requirements/wordpress-php-fpm
+      context: ./requirements/wordpress
       dockerfile: Dockerfile
     container_name: wordpress
-    restart: unless-stopped
+    depends_on:
+      - mariadb
     env_file: .env
     expose:
       - 9000
-    environment:
-      - WORDPRESS_DB_HOST=mariadb:3306
-      - WORDPRESS_DB_USER=$MYSQL_USER
-      - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
-      - WORDPRESS_DB_NAME=wordpress
     volumes:
       - wordpress:/var/www/html
     networks:
       - regex-33
 
   nginx:
-    depends_on:
-      - wordpress
     build:
       context: ./requirements/nginx
       dockerfile: Dockerfile
     container_name: nginx
-    env_file: .env
-    restart: unless-stopped
+    depends_on:
+      - wordpress
     ports:
-      - "80:80"
       - "443:443"
+      # - "80:80"
     volumes:
       - wordpress:/var/www/html
       - ./requirements/nginx:/etc/nginx/conf.d
@@ -76,105 +49,7 @@ services:
 volumes:
   wordpress:
   mariadb_data:
-  # mariadb_run:
 
 networks:
   regex-33:
     driver: bridge
-
-# version: '3'
-
-# services:
-#   mariadb:
-#     build:
-#       context: ./requirements/mariadb
-#       dockerfile: Dockerfile
-#     container_name: mariadb
-#     env_file: .env
-#     ports:
-#       - "3306:3306"
-#     restart: always
-#     volumes:
-#       - mariadb_data:/var/lib/mysql
-#       - mariadb_run:/run/mysqld
-#       - ./requirements/mariadb/conf.d:/etc/mysql/conf.d
-#     networks:
-#       - regex-33
-  
-
-#   wordpress:
-#     depends_on:
-#       - mariadb
-#     build:
-#       context: ./requirements/wordpress-php-fpm
-#       dockerfile: Dockerfile
-#     container_name: wordpress
-#     restart: unless-stopped
-#     env_file: .env
-#     expose:
-#       - 9000
-#     environment:
-#       - WORDPRESS_DB_HOST=mariadb:3306
-#       - WORDPRESS_DB_USER=$MYSQL_USER
-#       - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
-#       - WORDPRESS_DB_NAME=wordpress
-#     volumes:
-#       - wordpress:/var/www/html
-#     networks:
-#       - regex-33
-    
-
-#   # nginx:
-#   #   depends_on:
-#   #     - wordpress
-#   #   image: nginx:1.15.12-alpine
-#   #   container_name: nginx 
-#   #   restart: unless-stopped
-#   #   ports:
-#   #     - "80:80"
-#   #   volumes:
-#   #     - wordpress:/var/www/html
-#   #     - ./nginx-conf:/etc/nginx/conf.d
-#   #     # - certbot-etc:/etc/letsencrypt
-#   #   networks:
-#   #     - regex-33 
-
-#   nginx:
-#     depends_on:
-#       - wordpress
-#     build:
-#       context: ./requirements/nginx
-#       dockerfile: Dockerfile
-#     container_name: nginx
-#     env_file: .env
-#     restart: unless-stopped
-#     ports:
-#       - "80:80"
-#       - "443:443"
-#     volumes:
-#       - wordpress:/var/www/html
-#       - ./requirements/nginx:/etc/nginx/conf.d
-#       # - certbot-etc:/etc/letsencrypt
-#     networks:
-#       - regex-33
-
-#   # certbot:
-#   #   depends_on:
-#   #     - nginx 
-#   #   image: certbot/certbot
-#   #   container_name: certbot
-#   #   volumes:
-#   #     - certbot-etc:/etc/letsencrypt
-#   #     - wordpress:/var/www/html
-#   #   command: certonly --webroot --webroot-path=/var/www/html --email yachtata@yachtata.com --agree-tos --no-eff-email --force-renewal -d yachtata.com -d www.yachtata.com
-
-# volumes:
-#   # certbot-etc:
-#   wordpress:
-#   mariadb_data:
-#   mariadb_run:
-
-
-# networks:
-#   regex-33:
-#     driver: bridge
