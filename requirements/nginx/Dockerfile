@@ -47,9 +47,9 @@ RUN apt-get remove -y build-essential libpcre3-dev zlib1g-dev wget
 # Do not remove pcre-dev here to keep the runtime library
 
 COPY ./tools/nginx.conf /etc/nginx/nginx.conf
-RUN mkdir -p /etc/nginx/conf.d
-COPY tools/options-ssl-nginx.conf /etc/nginx/conf.d/options-ssl-nginx.conf;
-COPY tools/options-ssl-nginx.conf /etc/nginx/options-ssl-nginx.conf;
+# RUN mkdir -p /etc/nginx/conf.d
+# COPY ./conf/options-ssl-nginx.conf /etc/nginx/conf.d/options-ssl-nginx.conf;
+# COPY ./conf/options-ssl-nginx.conf /etc/nginx/options-ssl-nginx.conf;
 
 EXPOSE 443
 

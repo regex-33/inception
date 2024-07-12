@@ -21,6 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: wordpress
     depends_on:
+      - redis
       - mariadb
     env_file: .env
     expose:
@@ -45,6 +46,99 @@ services:
       # - ./requirements/nginx:/etc/nginx/conf.d
     networks:
       - regex-33
+    
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - regex-33
+    
+  ftps:
+    depends_on:
+      - wordpress
+    build:
+      context: ./requirements/ftps
+      dockerfile: Dockerfile
+    container_name: ftps
+    restart: always
+    env_file: .env
+    ports:
+      - "21:21"
+      - "10000-10100:10000-10100"  # Add this line to expose passive mode ports
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - regex-33
+  
+  adminer:
+    build:
+      context: ./requirements/adminer
+      dockerfile: Dockerfile
+    depends_on:
+      - mariadb
+      - wordpress
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - regex-33
+
+  elasticsearch:
+    build:
+      context: ./requirements/elasticsearch
+      dockerfile: Dockerfile
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - regex-33
+
+  kibana:
+    build:
+      context: ./requirements/kibana
+      dockerfile: Dockerfile
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5601:5601"
+    networks:
+      - regex-33 
+    
+  logstash:
+    build:
+      context: ./requirements/logstash
+      dockerfile: Dockerfile
+    container_name: logstash
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5000:5000"
+      - "9600:9600"
+    networks:
+      - regex-33
+  
+  filebeat:
+    build:
+      context: ./requirements/filebeat
+      dockerfile: Dockerfile
+    container_name: filebeat
+    depends_on:
+      - logstash
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - regex-33
+    
+    
 
 volumes:
   wordpress:
