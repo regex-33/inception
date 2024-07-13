@@ -48,7 +48,7 @@ RUN apt-get remove -y build-essential libpcre3-dev zlib1g-dev wget
 
 COPY ./tools/nginx.conf /etc/nginx/nginx.conf
 # RUN mkdir -p /etc/nginx/conf.d
-# COPY ./conf/options-ssl-nginx.conf /etc/nginx/conf.d/options-ssl-nginx.conf;
+COPY ./conf/options-ssl-nginx.conf /etc/nginx/conf.d/options-ssl-nginx.conf;
 # COPY ./conf/options-ssl-nginx.conf /etc/nginx/options-ssl-nginx.conf;
 
 EXPOSE 443

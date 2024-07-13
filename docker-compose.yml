@@ -43,7 +43,8 @@ services:
       # - "80:80"
     volumes:
       - wordpress:/var/www/html
-      # - ./requirements/nginx:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - ./requirements/nginx/conf:/etc/nginx/conf.d
     networks:
       - regex-33
     
@@ -55,6 +56,17 @@ services:
       - "6379:6379"
     networks:
       - regex-33
+
+  # redis:
+  #   build:
+  #     context: ./requirements/redis
+  #     dockerfile: Dockerfile
+  #   container_name: redis
+  #   restart: always
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - regex-33
     
   ftps:
     depends_on:
@@ -89,61 +101,89 @@ services:
     networks:
       - regex-33
 
-
-
-  prometheus:
+  phpredisadmin:
     depends_on:
-      - node_exporter
+      - redis
     build:
-      context: ./requirements/prometheus
+      context: ./requirements/phpredisadmin
       dockerfile: Dockerfile
+    container_name: phpredisadmin
+    environment:
+      - REDIS_1_HOST=redis
+      - REDIS_1_PORT=6379
+    restart: always
     ports:
-      - "9090:9090"
-    volumes:
-      - "./requirements/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "8081:80"
     networks:
       - regex-33
-    
-
-  node_exporter:
-    # depends_on:
-      # - prometheus
-    build:
-      context: ./requirements/node_exporter
-      dockerfile: Dockerfile
-    container_name: node_exporter
-    ports:
-      - "9100:9100"
-    networks:
-      - regex-33
-
-
-  grafana:
-    depends_on:
-      - prometheus
-    build:
-      context: ./requirements/grafana
-      dockerfile: Dockerfile
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - grafana_datasource:/etc/grafana/provisioning/datasources
-    networks:
-      - regex-33
-
-
 
 volumes:
   wordpress:
   mariadb_data:
   grafana_data:
   grafana_datasource:
+  certbot-etc:
 
 networks:
   regex-33:
     driver: bridge
+
+
+
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   depends_on:
+  #     - nginx
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - wordpress:/var/www/html
+  #   command: certonly --webroot --webroot-path=/var/www/html --email sammy@yachtata.com --agree-tos --no-eff-email --force-renewal -d yachtata.com -d www.yachtata.com
+  #   networks:
+  #     - regex-33
+
+
+  # prometheus:
+  #   depends_on:
+  #     - node_exporter
+  #   build:
+  #     context: ./requirements/prometheus
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - "./requirements/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+  #   networks:
+  #     - regex-33
+    
+
+  # node_exporter:
+  #   # depends_on:
+  #     # - prometheus
+  #   build:
+  #     context: ./requirements/node_exporter
+  #     dockerfile: Dockerfile
+  #   container_name: node_exporter
+  #   ports:
+  #     - "9100:9100"
+  #   networks:
+  #     - regex-33
+
+
+  # grafana:
+  #   depends_on:
+  #     - prometheus
+  #   build:
+  #     context: ./requirements/grafana
+  #     dockerfile: Dockerfile
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #     - grafana_datasource:/etc/grafana/provisioning/datasources
+  #   networks:
+  #     - regex-33
 
 
 
