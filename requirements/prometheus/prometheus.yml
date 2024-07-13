@@ -1,0 +1,20 @@
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+
+scrape_configs:
+  - job_name: 'wordpress'
+    static_configs:
+      - targets: ['wordpress:9000'] # Adjust the port if PHP-FPM exposes metrics
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:443']
+  - job_name: 'mariadb'
+    static_configs:
+      - targets: ['mariadb:3306'] # Use an exporter like mysqld_exporter
+# scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090'] # Prometheus will scrape metrics from itself.
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['node_exporter:9100'] # Replace 'localhost' with the IP address of the Node Exporter if it's running on a different machine.

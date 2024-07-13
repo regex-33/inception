@@ -89,61 +89,139 @@ services:
     networks:
       - regex-33
 
-  elasticsearch:
+
+
+  prometheus:
+    depends_on:
+      - node_exporter
     build:
-      context: ./requirements/elasticsearch
+      context: ./requirements/prometheus
       dockerfile: Dockerfile
-    container_name: elasticsearch
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "9090:9090"
+    volumes:
+      - "./requirements/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+    networks:
+      - regex-33
+    
+
+  node_exporter:
+    # depends_on:
+      # - prometheus
+    build:
+      context: ./requirements/node_exporter
+      dockerfile: Dockerfile
+    container_name: node_exporter
+    ports:
+      - "9100:9100"
     networks:
       - regex-33
 
-  kibana:
-    build:
-      context: ./requirements/kibana
-      dockerfile: Dockerfile
-    container_name: kibana
+
+  grafana:
     depends_on:
-      - elasticsearch
+      - prometheus
+    build:
+      context: ./requirements/grafana
+      dockerfile: Dockerfile
+    container_name: grafana
     ports:
-      - "5601:5601"
-    networks:
-      - regex-33 
-    
-  logstash:
-    build:
-      context: ./requirements/logstash
-      dockerfile: Dockerfile
-    container_name: logstash
-    depends_on:
-      - elasticsearch
-    ports:
-      - "5000:5000"
-      - "9600:9600"
-    networks:
-      - regex-33
-  
-  filebeat:
-    build:
-      context: ./requirements/filebeat
-      dockerfile: Dockerfile
-    container_name: filebeat
-    depends_on:
-      - logstash
+      - "3000:3000"
     volumes:
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock
+      - grafana_data:/var/lib/grafana
+      - grafana_datasource:/etc/grafana/provisioning/datasources
     networks:
       - regex-33
-    
-    
+
+
 
 volumes:
   wordpress:
   mariadb_data:
+  grafana_data:
+  grafana_datasource:
 
 networks:
   regex-33:
     driver: bridge
+
+
+
+  # grafana:
+  #   image: grafana/grafana
+  #   container_name: grafana
+  #   ports:
+  #     - 3000:3000
+  #   restart: unless-stopped
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=admin
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   # volumes:
+  #   #   - ./grafana:/etc/grafana/provisioning/datasources
+
+
+
+  # prometheus:
+  #   depends_on:
+  #     - wordpress
+  #   build:
+  #     context: ./requirements/prometheus
+  #     dockerfile: Dockerfile
+  #   container_name: prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - regex-33
+
+ 
+
+  # elasticsearch:
+  #   build:
+  #     context: ./requirements/elasticsearch
+  #     dockerfile: Dockerfile
+  #   container_name: elasticsearch
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   networks:
+  #     - regex-33
+
+  # kibana:
+  #   build:
+  #     context: ./requirements/kibana
+  #     dockerfile: Dockerfile
+  #   container_name: kibana
+  #   depends_on:
+  #     - elasticsearch
+  #   ports:
+  #     - "5601:5601"
+  #   networks:atasources
+  #     - regex-33 
+    
+  # logstash:
+  #   build:
+  #     context: ./requirements/logstash
+  #     dockerfile: Dockerfile
+  #   container_name: logstash
+  #   depends_on:
+  #     - elasticsearch
+  #   ports:
+  #     - "5000:5000"
+  #     - "9600:9600"
+  #   networks:
+  #     - regex-33
+  
+  # filebeat:
+  #   build:
+  #     context: ./requirements/filebeat
+  #     dockerfile: Dockerfile
+  #   container_name: filebeat
+  #   depends_on:
+  #     - logstash
+  #   volumes:
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   networks:
+  #     - regex-33
+    
+    

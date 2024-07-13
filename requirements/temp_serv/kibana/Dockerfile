@@ -6,5 +6,6 @@ RUN apt-get update && apt-get install wget curl -y
 
 COPY ./tools/kibana.sh /tmp/kibana.sh
 
+RUN export PATH=$PATH:/usr/share/kibana/bin
 # Download Kibana
-ENTRYPOINT [ "sh", "/tmp/kibana.sh" ]
+ENTRYPOINT [ "bash", "/tmp/kibana.sh" ]

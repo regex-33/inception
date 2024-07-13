@@ -1,5 +1,5 @@
 # install elasticsearch
-
+apt-get update; apt-get install -y curl openjdk-11-jre-headless sudo wget
 cd /tmp
 curl -fsSL  https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.2-linux-x86_64.tar.gz -o elasticsearch.tar.gz
 tar -xzf elasticsearch.tar.gz
