@@ -37,9 +37,6 @@ EOF
 fi
 
 
-# iptables -A INPUT -p tcp --match multiport --dports 10000:10100 -j ACCEPT
-# iptables -A INPUT -p tcp --match multiport --dports 21 -j ACCEPT
-
 
 ## Create a user for ftp access (adjusted for non-Alpine Linux distributions)
 adduser --disabled-password --gecos "" $FTP_USER

@@ -1,6 +1,5 @@
 FROM debian:buster
 
-# Install packages with Adminer dependencies
 
 RUN apt-get update && apt-get install wget -y
 

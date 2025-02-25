@@ -27,7 +27,7 @@ services:
     expose:
       - 9000
     volumes:
-      - wordpress:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - regex-33
 
@@ -40,33 +40,25 @@ services:
       - wordpress
     ports:
       - "443:443"
-      # - "80:80"
     volumes:
-      - wordpress:/var/www/html
-      - certbot-etc:/etc/letsencrypt
+      - wordpress_data:/var/www/html
       - ./requirements/nginx/conf:/etc/nginx/conf.d
     networks:
       - regex-33
     
+
   redis:
-    image: redis:alpine
+    build:
+      context: ./requirements/redis
+      dockerfile: Dockerfile
     container_name: redis
     restart: always
+    depends_on:
+      - mariadb 
     ports:
       - "6379:6379"
     networks:
       - regex-33
-
-  # redis:
-  #   build:
-  #     context: ./requirements/redis
-  #     dockerfile: Dockerfile
-  #   container_name: redis
-  #   restart: always
-  #   ports:
-  #     - "6379:6379"
-  #   networks:
-  #     - regex-33
     
   ftps:
     depends_on:
@@ -79,9 +71,9 @@ services:
     env_file: .env
     ports:
       - "21:21"
-      - "10000-10100:10000-10100"  # Add this line to expose passive mode ports
+      - "10000-10100:10000-10100"
     volumes:
-      - wordpress:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - regex-33
   
@@ -97,7 +89,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - wordpress:/var/www/html
+      - wordpress_data:/var/www/html
     networks:
       - regex-33
 
@@ -118,150 +110,20 @@ services:
       - regex-33
 
 volumes:
-  wordpress:
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/regex-33/data/wordpress
   mariadb_data:
-  grafana_data:
-  grafana_datasource:
-  certbot-etc:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/regex-33/data/mariadb_data
 
 networks:
   regex-33:
     driver: bridge
 
-
-
-  # certbot:
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   depends_on:
-  #     - nginx
-  #   volumes:
-  #     - certbot-etc:/etc/letsencrypt
-  #     - wordpress:/var/www/html
-  #   command: certonly --webroot --webroot-path=/var/www/html --email sammy@yachtata.com --agree-tos --no-eff-email --force-renewal -d yachtata.com -d www.yachtata.com
-  #   networks:
-  #     - regex-33
-
-
-  # prometheus:
-  #   depends_on:
-  #     - node_exporter
-  #   build:
-  #     context: ./requirements/prometheus
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "9090:9090"
-  #   volumes:
-  #     - "./requirements/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
-  #   networks:
-  #     - regex-33
-    
-
-  # node_exporter:
-  #   # depends_on:
-  #     # - prometheus
-  #   build:
-  #     context: ./requirements/node_exporter
-  #     dockerfile: Dockerfile
-  #   container_name: node_exporter
-  #   ports:
-  #     - "9100:9100"
-  #   networks:
-  #     - regex-33
-
-
-  # grafana:
-  #   depends_on:
-  #     - prometheus
-  #   build:
-  #     context: ./requirements/grafana
-  #     dockerfile: Dockerfile
-  #   container_name: grafana
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - grafana_data:/var/lib/grafana
-  #     - grafana_datasource:/etc/grafana/provisioning/datasources
-  #   networks:
-  #     - regex-33
-
-
-
-  # grafana:
-  #   image: grafana/grafana
-  #   container_name: grafana
-  #   ports:
-  #     - 3000:3000
-  #   restart: unless-stopped
-  #   environment:
-  #     - GF_SECURITY_ADMIN_USER=admin
-  #     - GF_SECURITY_ADMIN_PASSWORD=admin
-  #   # volumes:
-  #   #   - ./grafana:/etc/grafana/provisioning/datasources
-
-
-
-  # prometheus:
-  #   depends_on:
-  #     - wordpress
-  #   build:
-  #     context: ./requirements/prometheus
-  #     dockerfile: Dockerfile
-  #   container_name: prometheus
-  #   ports:
-  #     - "9090:9090"
-  #   networks:
-  #     - regex-33
-
- 
-
-  # elasticsearch:
-  #   build:
-  #     context: ./requirements/elasticsearch
-  #     dockerfile: Dockerfile
-  #   container_name: elasticsearch
-  #   ports:
-  #     - "9200:9200"
-  #     - "9300:9300"
-  #   networks:
-  #     - regex-33
-
-  # kibana:
-  #   build:
-  #     context: ./requirements/kibana
-  #     dockerfile: Dockerfile
-  #   container_name: kibana
-  #   depends_on:
-  #     - elasticsearch
-  #   ports:
-  #     - "5601:5601"
-  #   networks:atasources
-  #     - regex-33 
-    
-  # logstash:
-  #   build:
-  #     context: ./requirements/logstash
-  #     dockerfile: Dockerfile
-  #   container_name: logstash
-  #   depends_on:
-  #     - elasticsearch
-  #   ports:
-  #     - "5000:5000"
-  #     - "9600:9600"
-  #   networks:
-  #     - regex-33
-  
-  # filebeat:
-  #   build:
-  #     context: ./requirements/filebeat
-  #     dockerfile: Dockerfile
-  #   container_name: filebeat
-  #   depends_on:
-  #     - logstash
-  #   volumes:
-  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   networks:
-  #     - regex-33
-    
-    

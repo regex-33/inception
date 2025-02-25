@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY ./tools/script.sh /tmp/script.sh
 
-# RUN chmod +x /tmp/script.sh
+RUN chmod +x /tmp/script.sh
 
 
 EXPOSE 21
