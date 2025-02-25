@@ -15,21 +15,8 @@ sed -i "s/password_here/$WP_DATABASE_PWD/g" wp-config-sample.php
 sed -i "s/localhost/$MYSQL_HOSTNAME/g" wp-config-sample.php
 sed -i "s/database_name_here/$WP_DATABASE_NAME/g" wp-config-sample.php
 
-
-# echo "define('WP_REDIS_HOST', 'redis');
-# define('WP_REDIS_PORT', '6379');" >> wp-config-sample.php
-
-#add redis
-
-# sed -i '/define( '\''WP_DEBUG'\'', false );/a define( '\''WP_REDIS_CLIENT'\'', '\''predis'\'');' wp-config-sample.php
-
-#  change the value of WP_REDIS_HOST to redis-service
-
-# sed -i "s/\/\/define( 'WP_REDIS_HOST', '
-
 cp wp-config-sample.php wp-config.php
 
-# mv /wp-config.php /var/www/html/wp-config.php
 
 wp core install --url=$DOMAIN_NAME/ --title=$WP_TITLE --admin_user=$WP_ADMIN_USR --admin_password=$WP_ADMIN_PWD --admin_email=$WP_ADMIN_EMAIL --skip-email --allow-root
 

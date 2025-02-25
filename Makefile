@@ -26,7 +26,7 @@ build:
 	$(DOCKER_COMPOSE) build
 
 up:
-	@mkdir -p /home/regex-33/data/{wordpress,mariadb_data}
+	@mkdir -p /home/regex-33/data/{wordpress_data,mariadb_data}
 	@chmod -R 755 /home/regex-33/data
 	@echo "Starting containers..."
 	$(DOCKER_COMPOSE) up -d

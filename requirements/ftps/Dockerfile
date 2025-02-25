@@ -7,8 +7,6 @@ COPY ./tools/script.sh /tmp/script.sh
 
 RUN chmod +x /tmp/script.sh
 
-
 EXPOSE 21
 
-# CMD ["/tmp/script.sh"]
-ENTRYPOINT [ "sh" , "/tmp/script.sh" ]
+CMD [ "/tmp/script.sh" ]

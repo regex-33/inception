@@ -115,7 +115,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/regex-33/data/wordpress
+      device: /home/regex-33/data/wordpress_data
   mariadb_data:
     driver: local
     driver_opts:
