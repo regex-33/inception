@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youssef Achtatal - 1337 Student</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --light: #ecf0f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui;
+        }
+
+        body {
+            line-height: 1.6;
+            background-color: var(--light);
+        }
+
+        nav {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 1rem auto;
+            border: 5px solid var(--secondary);
+        }
+
+        section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <h1>Youssef Achtatal</h1>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <img src="profile.jpg" alt="Youssef Achtatal" class="profile-img">
+            <h2>Computer Science Student @ 1337</h2>
+            <p>Passionate about coding, systems, and cybersecurity</p>
+        </header>
+
+        <section id="about">
+            <h2>👨💻 About Me</h2>
+            <p>Hi! I'm Youssef, a computer science student at 1337 coding school. My interests include:</p>
+            <ul>
+                <li>Low-level programming (C/C++)</li>
+                <li>System administration</li>
+                <li>Network security</li>
+                <li>DevOps practices</li>
+            </ul>
+        </section>
+
+        <section id="projects">
+            <h2>🚀 Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3>FT_PRINTF</h3>
+                    <p>Reimplementation of standard printf function in C</p>
+                    <p><small>Technologies: C, Makefile</small></p>
+                </div>
+                <div class="project-card">
+                    <h3>Minishell</h3>
+                    <p>Custom shell implementation supporting pipelines and redirections</p>
+                    <p><small>Technologies: C, Unix systems</small></p>
+                </div>
+                <div class="project-card">
+                    <h3>Inception</h3>
+                    <p>A 42 project focused on learning Docker and Docker Compose.</p>
+                    <p><small>Technologies: Docker, Docker compose, nginx, Mariadb ...etc</small></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h2>👨💻 Technical Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <h4>C/C++</h4>
+                    <div class="progress-bar"><div style="width: 90%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <h4>Python</h4>
+                    <div class="progress-bar"><div style="width: 85%"></div></div>
+                </div>
+                <div class="skill-item">
+                    <h4>Linux Systems</h4>
+                    <div class="progress-bar"><div style="width: 88%"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2>📬 Contact</h2>
+            <p>
+                <i class="fas fa-envelope"></i> youssef@student.1337.ma<br>
+                <i class="fab fa-github"></i> github.com/regex-33<br>
+                <i class="fab fa-linkedin"></i> https://www.linkedin.com/in/youssef-achtatal-5642a52b1/
+            </p>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2023 Youssef Achtatal - Proud 1337 Student</p>
+        <p>Benguerir, Morocco</p>
+    </footer>
+</body>
+</html>

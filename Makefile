@@ -1,9 +1,8 @@
-# Makefile for Docker management
 .PHONY: all build up down stop remove volumes clean clear-all re help
 
 SHELL := /bin/bash -e
 
-DOCKER_COMPOSE := docker-compose
+DOCKER_COMPOSE := docker-compose  -f ./srcs/docker-compose.yml
 
 help:
 	@echo "Available targets:"
@@ -39,6 +38,10 @@ stop:
 	@echo "Stopping containers..."
 	$(DOCKER_COMPOSE) stop
 
+ps:
+	@echo "Stopping containers..."
+	$(DOCKER_COMPOSE) ps
+
 remove:
 	@echo "Removing project containers and images..."
 	$(DOCKER_COMPOSE) down --rmi all
@@ -67,20 +70,3 @@ clear-all:
 	fi
 
 re: down build up
-
-# Add safety checks
-check-%:
-	@if $$(hash $* 2> /dev/null); then \
-		echo "$* is installed"; \
-	else \
-		echo "$* is required"; exit 1; \
-	fi
-
-# Dependency checks
-pre-check: check-docker check-docker-compose
-
-check-docker:
-	@command -v docker >/dev/null 2>&1 || { echo >&2 "Docker is required but not installed. Aborting."; exit 1; }
-
-check-docker-compose:
-	@command -v docker-compose >/dev/null 2>&1 || { echo >&2 "Docker Compose is required but not installed. Aborting."; exit 1; }

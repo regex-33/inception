@@ -1,15 +1,12 @@
-## Ensure vsftpd is installed
+#!/bin/bash
+# Ensure vsftpd is installed
 apt-get update && apt-get install -y vsftpd
-# apt install iptables
 
-
-## Create necessary directories
 mkdir -p /etc/vsftpd
 
 ## Create the secure_chroot_dir
 mkdir -p /var/run/vsftpd/empty
 
-## Check if vsftpd.conf exists, if not create it
 if [ ! -f /etc/vsftpd/vsftpd.conf ]; then
     cat <<EOF > /etc/vsftpd/vsftpd.conf
 listen=YES
@@ -38,19 +35,14 @@ fi
 
 
 
-## Create a user for ftp access (adjusted for non-Alpine Linux distributions)
 adduser --disabled-password --gecos "" $FTP_USER
 echo "$FTP_USER:$FTP_PASS" | chpasswd
 
 ## Add the user to the list of users allowed to use the ftp server
 echo "$FTP_USER" >> /etc/vsftpd/user_list
 
-## Set the home directory for the user in vsftpd.conf correctly
 sed -i "s|#local_root=/var/www/localhost/htdocs|local_root=/var/www/html|g" /etc/vsftpd/vsftpd.conf
 
-## Create a directory for the user and set ownership
-# mkdir -p /var/www/html
 chown -R $FTP_USER:$FTP_USER /var/www/html
 
-## Start the ftp server
 exec /usr/sbin/vsftpd /etc/vsftpd/vsftpd.conf

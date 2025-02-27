@@ -21,8 +21,8 @@ services:
       dockerfile: Dockerfile
     container_name: wordpress
     depends_on:
-      - redis
       - mariadb
+      - redis
     env_file: .env
     expose:
       - 9000
@@ -49,10 +49,11 @@ services:
 
   redis:
     build:
-      context: ./requirements/redis
+      context: ./requirements/bonus/redis
       dockerfile: Dockerfile
     container_name: redis
     restart: always
+    env_file: .env
     depends_on:
       - mariadb 
     ports:
@@ -64,7 +65,7 @@ services:
     depends_on:
       - wordpress
     build:
-      context: ./requirements/ftps
+      context: ./requirements/bonus/ftps
       dockerfile: Dockerfile
     container_name: ftps
     restart: always
@@ -79,15 +80,13 @@ services:
   
   adminer:
     build:
-      context: ./requirements/adminer
+      context: ./requirements/bonus/adminer
       dockerfile: Dockerfile
     depends_on:
       - mariadb
       - wordpress
     container_name: adminer
     restart: always
-    ports:
-      - "8080:8080"
     volumes:
       - wordpress_data:/var/www/html
     networks:
@@ -97,15 +96,23 @@ services:
     depends_on:
       - redis
     build:
-      context: ./requirements/phpredisadmin
+      context: ./requirements/bonus/phpredisadmin
       dockerfile: Dockerfile
     container_name: phpredisadmin
-    environment:
-      - REDIS_1_HOST=redis
-      - REDIS_1_PORT=6379
+    env_file: .env
     restart: always
     ports:
       - "8081:80"
+    networks:
+      - regex-33
+  
+  site:
+    build:
+      context: ./requirements/bonus/site
+      dockerfile: Dockerfile
+    container_name: site 
+    ports:
+      - "8090:80"
     networks:
       - regex-33
 
